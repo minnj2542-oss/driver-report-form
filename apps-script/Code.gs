@@ -145,10 +145,9 @@ function buildMessageText(payload) {
   lines.push((payload.dispatchNo || '?') + ' // ' + (payload.location || '?'));
   lines.push('');
   const items = payload.items || [];
-  items.forEach(function (it, idx) {
+  items.forEach(function (it) {
     lines.push((it.code || '?') + ' ' + (it.name || '?') + ' - ' + (it.qty || '?') + '박스');
     if (it.zone) lines.push(it.zone);
-    if (idx < items.length - 1) lines.push('');
   });
   lines.push('');
   lines.push(payload.reason || '?');
