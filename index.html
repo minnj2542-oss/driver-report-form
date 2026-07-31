@@ -412,6 +412,10 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('resultScreen').style.display = 'none';
 });
 
+document.getElementById('dispatchNo').addEventListener('input', (e) => {
+  e.target.value = e.target.value.replace(/[^0-9]/g, '');
+});
+
 // 초기 항목 1개 생성
 addItem();
 </script>

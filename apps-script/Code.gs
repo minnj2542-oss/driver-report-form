@@ -142,10 +142,13 @@ function setStatus(id, status) {
 
 function buildMessageText(payload) {
   const lines = [];
-  lines.push((payload.dispatchNo || '?') + '/' + (payload.location || '?'));
+  lines.push((payload.dispatchNo || '?') + ' // ' + (payload.location || '?'));
   lines.push('');
-  (payload.items || []).forEach(function (it) {
-    lines.push((it.code || '?') + '/' + (it.name || '?') + '/' + (it.zone || '?') + '/' + (it.qty || '?') + '개');
+  const items = payload.items || [];
+  items.forEach(function (it, idx) {
+    lines.push((it.code || '?') + ' ' + (it.name || '?') + ' - ' + (it.qty || '?') + '박스');
+    if (it.zone) lines.push(it.zone);
+    if (idx < items.length - 1) lines.push('');
   });
   lines.push('');
   lines.push(payload.reason || '?');
