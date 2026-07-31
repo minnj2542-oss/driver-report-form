@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>물품 이상 신고</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3b5bdb">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="이상신고">
 <style>
   :root {
     --primary: #3b5bdb;
@@ -435,6 +441,14 @@ document.getElementById('dispatchNo').addEventListener('input', (e) => {
 
 // 초기 항목 1개 생성
 addItem();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch((err) => {
+      console.error('서비스워커 등록 실패', err);
+    });
+  });
+}
 </script>
 </body>
 </html>
