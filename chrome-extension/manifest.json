@@ -1,15 +1,17 @@
 {
   "manifest_version": 3,
   "name": "물품 이상 신고 대시보드",
-  "version": "1.0.0",
-  "description": "기사님 물품 이상 신고 목록을 툴바에서 바로 확인하고 복사/처리완료 처리합니다.",
+  "version": "1.1.0",
+  "description": "기사님 물품 이상 신고 목록을 브라우저 옆 사이드패널에서 바로 확인하고 복사/처리완료 처리합니다.",
   "action": {
-    "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
   },
   "icons": {
     "16": "icons/icon16.png",
@@ -19,7 +21,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["alarms"],
+  "permissions": ["alarms", "sidePanel"],
   "host_permissions": [
     "https://script.google.com/*",
     "https://script.googleusercontent.com/*"

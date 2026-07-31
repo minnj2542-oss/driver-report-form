@@ -78,3 +78,7 @@ async function complete(id) {
 document.getElementById('refreshBtn').addEventListener('click', loadReports);
 
 loadReports();
+setInterval(loadReports, 15000);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) loadReports();
+});

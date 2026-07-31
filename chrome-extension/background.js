@@ -14,6 +14,7 @@ async function updateBadge() {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
+  chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(console.error);
   chrome.alarms.create('checkReports', { periodInMinutes: 1 });
   updateBadge();
 });
