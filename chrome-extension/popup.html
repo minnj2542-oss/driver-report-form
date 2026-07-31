@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>신고 대시보드</title>
+<style>
+  :root {
+    --primary: #3b5bdb;
+    --primary-dark: #2f4bc7;
+    --bg: #f4f5f7;
+    --card: #ffffff;
+    --border: #dcdfe4;
+    --text: #1b1f27;
+    --muted: #6b7280;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 380px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    font-size: 14px;
+  }
+  .wrap { padding: 12px; }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  h1 { font-size: 16px; margin: 0; }
+  h1 .count { color: var(--primary); }
+  #refreshBtn {
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  #list {
+    max-height: 480px;
+    overflow-y: auto;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .card-head .dispatch {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--primary-dark);
+  }
+  .card-head .time {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .card-text {
+    white-space: pre-wrap;
+    font-size: 12.5px;
+    line-height: 1.5;
+    background: #f8f9fb;
+    border-radius: 6px;
+    padding: 8px 9px;
+    margin-bottom: 8px;
+  }
+  .card-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .card-actions button {
+    flex: 1;
+    padding: 7px;
+    font-size: 12.5px;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .card-actions button:hover { background: var(--bg); border-color: var(--primary); }
+  .copy-btn { border-color: var(--primary); color: var(--primary-dark); }
+  .copy-btn:hover { background: #eef1ff; }
+  .copy-btn.copied { background: var(--primary); color: #fff; }
+  .done-btn { color: var(--muted); }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px 0;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar">
+    <h1>대기중 신고 <span class="count" id="countLabel">(0)</span></h1>
+    <button id="refreshBtn" type="button">새로고침</button>
+  </div>
+  <div id="list"></div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
