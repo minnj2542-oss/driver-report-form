@@ -139,11 +139,16 @@
 // Apps Script 웹앱 배포 후 이 URL을 실제 /exec 주소로 교체하세요. (index.html과 동일한 주소)
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_KjCQveSYn0kXPpw9QZKmzsFTOm0IIBAjwi40cLkNXi-VWXdrmdQBpKu2P1Se-tvl/exec";
 
+let currentReports = [];
+
 async function loadReports() {
   try {
     const res = await fetch(APPS_SCRIPT_URL);
     const data = await res.json();
-    if (data.ok) render(data.reports);
+    if (data.ok) {
+      currentReports = data.reports;
+      render(currentReports);
+    }
   } catch (err) {
     console.error('불러오기 실패', err);
   }
@@ -207,14 +212,23 @@ async function copyText(btn) {
 }
 
 async function toggleStatus(id, nextStatus) {
+  const report = currentReports.find(r => r.id === id);
+  if (!report) return;
+  const prevStatus = report.status;
+  report.status = nextStatus;
+  render(currentReports);
+
   try {
-    await fetch(APPS_SCRIPT_URL, {
+    const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ action: 'setStatus', id, status: nextStatus })
     });
-    loadReports();
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || '실패');
   } catch (err) {
+    report.status = prevStatus;
+    render(currentReports);
     alert('상태 변경에 실패했습니다.');
   }
 }

@@ -1,10 +1,15 @@
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_KjCQveSYn0kXPpw9QZKmzsFTOm0IIBAjwi40cLkNXi-VWXdrmdQBpKu2P1Se-tvl/exec";
 
+let currentPending = [];
+
 async function loadReports() {
   try {
     const res = await fetch(APPS_SCRIPT_URL);
     const data = await res.json();
-    if (data.ok) render(data.reports.filter(r => r.status !== 'done'));
+    if (data.ok) {
+      currentPending = data.reports.filter(r => r.status !== 'done');
+      render(currentPending);
+    }
   } catch (err) {
     console.error('불러오기 실패', err);
   }
@@ -59,18 +64,31 @@ async function copyText(btn) {
   }
 }
 
+function notifyBadge() {
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+    chrome.runtime.sendMessage({ type: 'refresh-badge' });
+  }
+}
+
 async function complete(id) {
+  const idx = currentPending.findIndex(r => r.id === id);
+  if (idx === -1) return;
+  const removed = currentPending.splice(idx, 1)[0];
+  render(currentPending);
+  notifyBadge();
+
   try {
-    await fetch(APPS_SCRIPT_URL, {
+    const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ action: 'setStatus', id, status: 'done' })
     });
-    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-      chrome.runtime.sendMessage({ type: 'refresh-badge' });
-    }
-    loadReports();
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || '실패');
   } catch (err) {
+    currentPending.splice(idx, 0, removed);
+    render(currentPending);
+    notifyBadge();
     alert('처리완료 처리에 실패했습니다.');
   }
 }
