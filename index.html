@@ -179,17 +179,18 @@
   #resultScreen h2 { font-size: 24px; margin-bottom: 10px; }
   #resultScreen p { color: var(--muted); font-size: 16px; margin-bottom: 26px; }
   #resultScreen.error h2 { color: var(--danger); }
-  #resultSummary {
-    background: var(--bg);
+  #resultSummary { margin: 0 0 18px; }
+  #resultSummary:empty { display: none; }
+  #resultSummary .summary-line {
+    border: 2px solid var(--border);
     border-radius: 10px;
-    padding: 12px 14px;
-    margin: 0 0 18px;
-    text-align: left;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    text-align: center;
     font-size: 15px;
-    line-height: 1.7;
     color: var(--text);
   }
-  #resultSummary:empty { display: none; }
+  #resultSummary .summary-line:last-child { margin-bottom: 0; }
   #resetBtn, #retryBtn {
     width: 100%;
     padding: 16px;
@@ -281,7 +282,7 @@ function addItem() {
     <label>상품코드</label>
     <input type="tel" inputmode="numeric" class="item-code" placeholder="EX) 220458">
     <div class="match-result"></div>
-    <label style="margin-top:8px;">수량</label>
+    <label style="margin-top:8px;">수량(박스)</label>
     <input type="tel" inputmode="numeric" class="item-qty" placeholder="EX) 2">
   `;
   itemList.appendChild(block);
@@ -409,8 +410,8 @@ function showResult(success, errMsg, items) {
     document.getElementById('resultTitle').textContent = '전송 완료';
     document.getElementById('resultMsg').textContent = '담당자에게 전달되었습니다.';
     summaryEl.innerHTML = (items || [])
-      .map(it => `${it.code}) ${it.name} - ${it.qty}박스`)
-      .join('<br>');
+      .map(it => `<div class="summary-line">${it.code}) ${it.name} - ${it.qty}박스</div>`)
+      .join('');
   } else {
     summaryEl.innerHTML = '';
     screen.classList.add('error');

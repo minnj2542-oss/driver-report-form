@@ -44,7 +44,10 @@
     color: #fff;
     border: none;
     border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
   }
+  #refreshBtn:hover { background: var(--primary-dark); }
   .section-label {
     font-size: 15px;
     font-weight: 700;
@@ -60,7 +63,7 @@
   }
   .card.done {
     background: var(--done-bg);
-    opacity: 0.7;
+    opacity: 0.5;
   }
   .card-head {
     display: flex;
@@ -71,6 +74,9 @@
   .card-head .dispatch {
     font-size: 19px;
     font-weight: 800;
+    color: #dd5035;
+  }
+  .card.done .card-head .dispatch {
     color: var(--primary-dark);
   }
   .card-head .time {
