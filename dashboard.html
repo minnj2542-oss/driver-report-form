@@ -98,10 +98,22 @@
     border-radius: 8px;
     border: 2px solid var(--border);
     background: #fff;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .card-actions button:hover {
+    background: var(--bg);
+    border-color: var(--primary);
+  }
+  .card-actions button:active {
+    transform: scale(0.97);
   }
   .copy-btn { border-color: var(--primary); color: var(--primary-dark); }
+  .copy-btn:hover { background: #eef1ff; }
   .copy-btn.copied { background: var(--primary); color: #fff; }
   .done-btn { color: var(--muted); }
+  .done-btn.undo-btn { color: var(--primary-dark); border-color: var(--primary); }
+  .done-btn.undo-btn:hover { background: #eef1ff; }
   .empty {
     text-align: center;
     color: var(--muted);
@@ -176,7 +188,7 @@ function cardHtml(r, isDone) {
       <div class="card-text">${escapedText}</div>
       <div class="card-actions">
         <button type="button" class="copy-btn" data-text="${encodeURIComponent(r.text)}">복사</button>
-        <button type="button" class="done-btn" data-id="${r.id}" data-next="${isDone ? 'pending' : 'done'}">${isDone ? '되돌리기' : '처리완료'}</button>
+        <button type="button" class="done-btn ${isDone ? 'undo-btn' : ''}" data-id="${r.id}" data-next="${isDone ? 'pending' : 'done'}">${isDone ? '되돌리기' : '처리완료'}</button>
       </div>
     </div>
   `;
