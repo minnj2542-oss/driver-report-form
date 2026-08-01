@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_KjCQveSYn0kXPpw9QZKmzsFTOm0IIBAjwi40cLkNXi-VWXdrmdQBpKu2P1Se-tvl/exec";
+const APPS_SCRIPT_URL = "https://blue-snowflake-09f5.6611cc.workers.dev";
 
 async function updateBadge() {
   try {

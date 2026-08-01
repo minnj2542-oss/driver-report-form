@@ -23,7 +23,6 @@
   },
   "permissions": ["alarms", "sidePanel"],
   "host_permissions": [
-    "https://script.google.com/*",
-    "https://script.googleusercontent.com/*"
+    "https://blue-snowflake-09f5.6611cc.workers.dev/*"
   ]
 }
