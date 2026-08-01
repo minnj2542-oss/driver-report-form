@@ -142,7 +142,7 @@ function setStatus(id, status) {
 
 function buildMessageText(payload) {
   const lines = [];
-  lines.push((payload.dispatchNo || '?') + ' // ' + (payload.location || '?'));
+  lines.push((payload.dispatchNo || '?') + '번 // ' + (payload.location || '?'));
   lines.push('');
   const items = payload.items || [];
   items.forEach(function (it) {
