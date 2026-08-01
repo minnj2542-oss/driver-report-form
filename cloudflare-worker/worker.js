@@ -2,7 +2,7 @@
 // 회사 네트워크가 script.google.com 도메인을 막고 있을 때,
 // 브라우저는 이 Worker 주소로만 요청하고, 실제 구글 요청은 Worker(서버)가 대신 보냄.
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_KjCQveSYn0kXPpw9QZKmzsFTOm0IIBAjwi40cLkNXi-VWXdrmdQBpKu2P1Se-tvl/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-ooUmS4JLv6nuWOpTxLzUzHeNJytqFvIMlSoLCUai--Y1AcqX7C18FqWweNxLhgu4/exec";
 
 export default {
   async fetch(request) {
