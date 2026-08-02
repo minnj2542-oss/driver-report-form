@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dashboard-v1';
+const CACHE_NAME = 'dashboard-v2';
 const APP_SHELL = ['./dashboard.html', './dashboard-manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -15,8 +15,13 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-  // Apps Script API 요청은 항상 최신 데이터가 필요하므로 캐시하지 않고 그대로 통과
-  if (e.request.url.includes('script.google.com') || e.request.url.includes('script.googleusercontent.com')) return;
+  // 백엔드 API 요청(Apps Script / Cloudflare Worker 프록시)은 항상 최신 데이터가
+  // 필요하므로 캐시하지 않고 그대로 통과
+  if (
+    e.request.url.includes('script.google.com') ||
+    e.request.url.includes('script.googleusercontent.com') ||
+    e.request.url.includes('workers.dev')
+  ) return;
 
   e.respondWith(
     caches.match(e.request).then((cached) => {
