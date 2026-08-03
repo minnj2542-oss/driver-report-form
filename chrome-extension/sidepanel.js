@@ -35,12 +35,21 @@ function render(pending) {
   });
 }
 
+function escapeHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function cardHtml(r) {
-  const escapedText = r.text.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const escapedText = escapeHtml(r.text);
   return `
     <div class="card">
       <div class="card-head">
-        <span class="dispatch">${r.dispatchNo || '?'} / ${r.location || '?'}</span>
+        <span class="dispatch">${escapeHtml(r.dispatchNo) || '?'} / ${escapeHtml(r.location) || '?'}</span>
         <span class="time">${formatTime(r.timestamp)}</span>
       </div>
       <div class="card-text">${escapedText}</div>
