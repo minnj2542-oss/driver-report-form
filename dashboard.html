@@ -165,7 +165,7 @@
 const APPS_SCRIPT_URL = "https://blue-snowflake-09f5.6611cc.workers.dev";
 
 let currentReports = [];
-let knownPendingIds = null; // null = 아직 기준선을 안 잡음(첫 로딩)
+let knownIds = null; // null = 아직 기준선을 안 잡음(첫 로딩). 상태(대기중/완료)와 무관하게 "한 번이라도 본 id"를 전부 기억.
 
 async function loadReports() {
   try {
@@ -182,18 +182,19 @@ async function loadReports() {
 }
 
 function notifyNewReports(reports) {
-  const pending = reports.filter(r => r.status !== 'done');
-  const pendingIds = new Set(pending.map(r => r.id));
+  const allIds = new Set(reports.map(r => r.id));
 
-  if (knownPendingIds === null) {
+  if (knownIds === null) {
     // 페이지를 처음 열었을 때 이미 있던 신고는 알림 대상이 아님(기준선만 설정)
-    knownPendingIds = pendingIds;
+    knownIds = allIds;
     return;
   }
 
   if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-    pending.forEach(r => {
-      if (!knownPendingIds.has(r.id)) {
+    reports.forEach(r => {
+      // 완전히 처음 보는 id만 "새 신고"로 알림. 처리완료↔되돌리기로 상태만
+      // 바뀐 기존 신고는 knownIds에 계속 남아있어서 다시 알림이 울리지 않음.
+      if (r.status !== 'done' && !knownIds.has(r.id)) {
         new Notification('새 신고 도착', {
           body: `${r.dispatchNo || '?'} / ${r.location || '?'}`,
           tag: r.id
@@ -202,7 +203,7 @@ function notifyNewReports(reports) {
     });
   }
 
-  knownPendingIds = pendingIds;
+  knownIds = allIds;
 }
 
 function updateNotifyBtn() {
