@@ -102,6 +102,22 @@ async function complete(id) {
   }
 }
 
+async function updateNotifyToggleBtn() {
+  const btn = document.getElementById('notifyToggleBtn');
+  const stored = await chrome.storage.local.get('notifyEnabled');
+  const enabled = stored.notifyEnabled !== false; // 기본값 켜짐
+  btn.textContent = enabled ? '🔔' : '🔕';
+  btn.title = enabled ? '알림 끄기' : '알림 켜기';
+}
+
+document.getElementById('notifyToggleBtn').addEventListener('click', async () => {
+  const stored = await chrome.storage.local.get('notifyEnabled');
+  const enabled = stored.notifyEnabled !== false;
+  await chrome.storage.local.set({ notifyEnabled: !enabled });
+  updateNotifyToggleBtn();
+});
+updateNotifyToggleBtn();
+
 document.getElementById('refreshBtn').addEventListener('click', loadReports);
 
 loadReports();

@@ -49,6 +49,19 @@
     border-radius: 6px;
     cursor: pointer;
   }
+  #notifyToggleBtn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1;
+    background: #fff;
+    color: var(--primary-dark);
+    border: 2px solid var(--primary);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .top-bar-actions { display: flex; gap: 6px; }
   #list {
     flex: 1;
     overflow-y: auto;
@@ -117,7 +130,10 @@
 <div class="wrap">
   <div class="top-bar">
     <h1>대기중 신고 <span class="count" id="countLabel">(0)</span></h1>
-    <button id="refreshBtn" type="button">새로고침</button>
+    <div class="top-bar-actions">
+      <button id="notifyToggleBtn" type="button" title="알림 켜기/끄기">🔔</button>
+      <button id="refreshBtn" type="button">새로고침</button>
+    </div>
   </div>
   <div id="list"></div>
 </div>
