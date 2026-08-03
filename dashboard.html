@@ -195,7 +195,7 @@ function notifyNewReports(reports) {
       // 완전히 처음 보는 id만 "새 신고"로 알림. 처리완료↔되돌리기로 상태만
       // 바뀐 기존 신고는 knownIds에 계속 남아있어서 다시 알림이 울리지 않음.
       if (r.status !== 'done' && !knownIds.has(r.id)) {
-        new Notification('새 신고 도착', {
+        new Notification('신고가 접수되었습니다!', {
           body: `${r.dispatchNo || '?'} / ${r.location || '?'}`,
           tag: r.id
         });
