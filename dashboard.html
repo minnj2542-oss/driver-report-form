@@ -54,6 +54,19 @@
     transition: background 0.15s;
   }
   #refreshBtn:hover { background: var(--primary-dark); }
+  #notifyBtn {
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    background: #fff;
+    color: var(--primary-dark);
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  #notifyBtn:hover { background: #eef1ff; }
+  #notifyBtn.hidden { display: none; }
   .section-label {
     font-size: 15px;
     font-weight: 700;
@@ -134,7 +147,10 @@
 <div class="wrap">
   <div class="top-bar">
     <h1>신고 대시보드</h1>
-    <button id="refreshBtn" type="button">새로고침</button>
+    <div style="display:flex; gap:8px;">
+      <button id="notifyBtn" type="button">🔔 알림 켜기</button>
+      <button id="refreshBtn" type="button">새로고침</button>
+    </div>
   </div>
 
   <div class="section-label" style="color:#dd5035;">대기중</div>
@@ -149,6 +165,7 @@
 const APPS_SCRIPT_URL = "https://blue-snowflake-09f5.6611cc.workers.dev";
 
 let currentReports = [];
+let knownPendingIds = null; // null = 아직 기준선을 안 잡음(첫 로딩)
 
 async function loadReports() {
   try {
@@ -156,12 +173,55 @@ async function loadReports() {
     const data = await res.json();
     if (data.ok) {
       currentReports = data.reports;
+      notifyNewReports(currentReports);
       render(currentReports);
     }
   } catch (err) {
     console.error('불러오기 실패', err);
   }
 }
+
+function notifyNewReports(reports) {
+  const pending = reports.filter(r => r.status !== 'done');
+  const pendingIds = new Set(pending.map(r => r.id));
+
+  if (knownPendingIds === null) {
+    // 페이지를 처음 열었을 때 이미 있던 신고는 알림 대상이 아님(기준선만 설정)
+    knownPendingIds = pendingIds;
+    return;
+  }
+
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    pending.forEach(r => {
+      if (!knownPendingIds.has(r.id)) {
+        new Notification('새 신고 도착', {
+          body: `${r.dispatchNo || '?'} / ${r.location || '?'}`,
+          tag: r.id
+        });
+      }
+    });
+  }
+
+  knownPendingIds = pendingIds;
+}
+
+function updateNotifyBtn() {
+  const btn = document.getElementById('notifyBtn');
+  if (typeof Notification === 'undefined') {
+    btn.classList.add('hidden');
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    btn.classList.add('hidden');
+  } else {
+    btn.classList.remove('hidden');
+  }
+}
+
+document.getElementById('notifyBtn').addEventListener('click', () => {
+  Notification.requestPermission().then(updateNotifyBtn);
+});
+updateNotifyBtn();
 
 function formatTime(iso) {
   const d = new Date(iso);
