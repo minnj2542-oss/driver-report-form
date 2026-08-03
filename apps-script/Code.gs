@@ -112,32 +112,44 @@ function doPost(e) {
 }
 
 function addReport(payload) {
-  const sheet = getReportSheet();
-  const id = Utilities.getUuid();
-  const text = buildMessageText(payload);
-  sheet.appendRow([
-    id,
-    new Date(),
-    payload.dispatchNo || '',
-    payload.location || '',
-    JSON.stringify(payload.items || []),
-    payload.reason || '',
-    text,
-    'pending'
-  ]);
-  return { ok: true, id: id };
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = getReportSheet();
+    const id = Utilities.getUuid();
+    const text = buildMessageText(payload);
+    sheet.appendRow([
+      id,
+      new Date(),
+      payload.dispatchNo || '',
+      payload.location || '',
+      JSON.stringify(payload.items || []),
+      payload.reason || '',
+      text,
+      'pending'
+    ]);
+    return { ok: true, id: id };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function setStatus(id, status) {
-  const sheet = getReportSheet();
-  const values = sheet.getDataRange().getValues();
-  for (let i = 1; i < values.length; i++) {
-    if (values[i][0] === id) {
-      sheet.getRange(i + 1, 8).setValue(status); // 8번째 열 = status
-      return { ok: true };
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = getReportSheet();
+    const values = sheet.getDataRange().getValues();
+    for (let i = 1; i < values.length; i++) {
+      if (values[i][0] === id) {
+        sheet.getRange(i + 1, 8).setValue(status); // 8번째 열 = status
+        return { ok: true };
+      }
     }
+    return { ok: false, error: 'id를 찾을 수 없습니다: ' + id };
+  } finally {
+    lock.releaseLock();
   }
-  return { ok: false, error: 'id를 찾을 수 없습니다: ' + id };
 }
 
 function buildMessageText(payload) {
