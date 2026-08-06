@@ -509,7 +509,7 @@ function getMyReports() {
 function saveMyReport(entry) {
   const list = getMyReports();
   list.unshift(entry);
-  localStorage.setItem(MY_REPORTS_KEY, JSON.stringify(list.slice(0, 50))); // 최근 50건까지만 보관
+  localStorage.setItem(MY_REPORTS_KEY, JSON.stringify(list.slice(0, 20))); // 최근 20건까지만 보관, 이후는 자동 삭제
 }
 
 function formatMyTime(iso) {
