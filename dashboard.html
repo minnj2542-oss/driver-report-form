@@ -210,8 +210,11 @@ function notifyNewReports(reports) {
 
 // 브라우저 알림 권한 자체는 한 번 허용하면 JS로 다시 끌 수 없어서,
 // 앱 안에서 켜고 끌 수 있는 별도 설정을 localStorage에 저장해서 관리.
+// 한 번도 명시적으로 끈 적이 없으면(null) 기본값은 켜짐 — 크롬 자체
+// 권한 설정(주소창 아이콘 등)으로 이미 허용한 경우도 바로 동작하도록.
 function isNotifyEnabled() {
-  return localStorage.getItem('notifyEnabled') === 'true';
+  const v = localStorage.getItem('notifyEnabled');
+  return v === null ? true : v === 'true';
 }
 
 function updateNotifyBtn() {
