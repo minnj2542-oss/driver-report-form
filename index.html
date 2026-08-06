@@ -233,6 +233,7 @@
     padding: 12px;
     margin-bottom: 8px;
   }
+  .my-status-row.not-today { opacity: 0.5; }
   .my-status-icon { font-size: 20px; flex-shrink: 0; }
   .my-status-info { flex: 1; font-size: 15px; }
   .my-status-info .dispatch { font-weight: 700; }
@@ -517,6 +518,14 @@ function formatMyTime(iso) {
   return d.toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
+function isToday(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate();
+}
+
 async function loadMyStatus() {
   const myReports = getMyReports();
   const listEl = document.getElementById('myStatusList');
@@ -538,8 +547,9 @@ async function loadMyStatus() {
 
     listEl.innerHTML = myReports.map((m) => {
       const isDone = statusMap[m.id] === 'done';
+      const notToday = !isToday(m.timestamp);
       return `
-        <div class="my-status-row">
+        <div class="my-status-row ${notToday ? 'not-today' : ''}">
           <span class="my-status-icon">${isDone ? '✅' : '⏳'}</span>
           <span class="my-status-info">
             <span class="dispatch">${escapeHtml(m.dispatchNo) || '?'}번 / ${escapeHtml(m.location) || '?'}</span>
