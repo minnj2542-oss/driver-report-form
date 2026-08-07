@@ -35,7 +35,7 @@
   .wrap {
     max-width: 480px;
     margin: 0 auto;
-    padding: 16px 14px 88px;
+    padding: 68px 14px 88px;
   }
   .card {
     background: var(--card);
@@ -202,26 +202,35 @@
     border-radius: 12px;
   }
   #formScreen.hidden { display: none; }
-  .tab-bar {
+  .fab {
+    position: fixed;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    font-size: 22px;
     display: flex;
-    gap: 8px;
-    margin-bottom: 14px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(30, 40, 90, 0.16), 0 2px 6px rgba(30, 40, 90, 0.08);
+    cursor: pointer;
+    z-index: 50;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .tab-btn {
-    flex: 1;
-    padding: 11px;
-    font-size: 15px;
-    font-weight: 700;
-    background: var(--card);
-    color: var(--muted);
-    border: 2px solid var(--border);
-    border-radius: 10px;
+  .fab:active { transform: scale(0.92); }
+  #myStatusFab {
+    top: 16px;
+    right: 16px;
+    background: #fff;
+    color: var(--primary);
   }
-  .tab-btn.active {
+  #refreshFab {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    right: 20px;
     background: var(--primary);
     color: #fff;
-    border-color: var(--primary);
   }
+  #refreshFab.hidden { display: none; }
   #myStatusScreen.hidden { display: none; }
   .my-status-row {
     display: flex;
@@ -256,12 +265,10 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<button type="button" class="fab" id="myStatusFab" title="내 신고 현황">📋</button>
+<button type="button" class="fab hidden" id="refreshFab" title="새로고침">🔄</button>
 
-  <div class="tab-bar">
-    <button type="button" class="tab-btn active" id="tabFormBtn">신고하기</button>
-    <button type="button" class="tab-btn" id="tabMyStatusBtn">내 신고 현황</button>
-  </div>
+<div class="wrap">
 
   <div id="myStatusScreen" class="hidden">
     <div id="myStatusList"></div>
@@ -564,30 +571,40 @@ async function loadMyStatus() {
   }
 }
 
-const tabFormBtn = document.getElementById('tabFormBtn');
-const tabMyStatusBtn = document.getElementById('tabMyStatusBtn');
+const myStatusFab = document.getElementById('myStatusFab');
+const refreshFab = document.getElementById('refreshFab');
 
 function showFormTab() {
-  tabFormBtn.classList.add('active');
-  tabMyStatusBtn.classList.remove('active');
   document.getElementById('formScreen').classList.remove('hidden');
   document.getElementById('resultScreen').style.display = 'none';
   document.getElementById('myStatusScreen').classList.add('hidden');
   document.getElementById('submitBar').style.display = 'block';
+  myStatusFab.textContent = '📋';
+  myStatusFab.title = '내 신고 현황';
+  refreshFab.classList.add('hidden');
 }
 
 function showMyStatusTab() {
-  tabMyStatusBtn.classList.add('active');
-  tabFormBtn.classList.remove('active');
   document.getElementById('formScreen').classList.add('hidden');
   document.getElementById('resultScreen').style.display = 'none';
   document.getElementById('myStatusScreen').classList.remove('hidden');
   document.getElementById('submitBar').style.display = 'none';
+  myStatusFab.textContent = '✕';
+  myStatusFab.title = '신고 화면으로';
+  refreshFab.classList.remove('hidden');
   loadMyStatus();
 }
 
-tabFormBtn.addEventListener('click', showFormTab);
-tabMyStatusBtn.addEventListener('click', showMyStatusTab);
+myStatusFab.addEventListener('click', () => {
+  const onStatus = !document.getElementById('myStatusScreen').classList.contains('hidden');
+  if (onStatus) {
+    showFormTab();
+  } else {
+    showMyStatusTab();
+  }
+});
+
+refreshFab.addEventListener('click', loadMyStatus);
 
 document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('dispatchNo').value = '';
