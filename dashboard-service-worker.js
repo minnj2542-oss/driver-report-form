@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dashboard-v2';
+const CACHE_NAME = 'dashboard-v3';
 const APP_SHELL = ['./dashboard.html', './dashboard-manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -23,16 +23,15 @@ self.addEventListener('fetch', (e) => {
     e.request.url.includes('workers.dev')
   ) return;
 
+  // 네트워크 우선: 온라인일 땐 항상 최신 버전을 받아오고, 오프라인일 때만
+  // 저장된 캐시로 대체.
   e.respondWith(
-    caches.match(e.request).then((cached) => {
-      const network = fetch(e.request)
-        .then((res) => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
-          return res;
-        })
-        .catch(() => cached);
-      return cached || network;
-    })
+    fetch(e.request)
+      .then((res) => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
