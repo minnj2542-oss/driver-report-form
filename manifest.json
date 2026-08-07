@@ -1,6 +1,6 @@
 {
-  "name": "물품 이상 신고",
-  "short_name": "이상신고",
+  "name": "동탄CPG물품신고",
+  "short_name": "동탄CPG물품신고",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
